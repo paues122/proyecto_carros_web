@@ -25,6 +25,25 @@ $cotizo = $sistema->fetch("
     ORDER BY fecha_cotizacion DESC LIMIT 1
 ", [$_SESSION['id_usuario']]);
 
+// === GENERAR QR ===
+$qr_file = null;
+if ($cotizo) {
+    $qr_lib = 'libs/phpqrcode/qrlib.php';
+    if (file_exists($qr_lib)) {
+        require_once $qr_lib;
+
+        $target_url = "https://wa.me/message/UOTTUER73EA3B1";
+
+        $qr_dir = 'qrcodes/';
+        if (!is_dir($qr_dir)) {
+            mkdir($qr_dir, 0755, true);
+        }
+
+        $qr_file = $qr_dir . 'qr-aprobado-' . $_SESSION['id_usuario'] . '.png';
+        QRcode::png($target_url, $qr_file, QR_ECLEVEL_L, 6);
+    }
+}
+
 include 'includes/header.php';
 ?>
 
@@ -40,8 +59,7 @@ include 'includes/header.php';
                     <p class="fs-4"><strong>Nombre:</strong> <?= htmlspecialchars($usuario['nombre_completo']) ?></p>
                     <p class="fs-5"><strong>Correo:</strong> <?= htmlspecialchars($usuario['correo']) ?></p>
                 </div>
-                <div class="col-md-6">
-                    
+                <div class="col-md-6 text-md-end">
                     <p class="fs-5"><strong>Ingresos:</strong> 
                         <span class="text-success fw-bold">$<?= number_format($usuario['ingresos_mensuales'] ?? 0, 2) ?></span>
                     </p>
@@ -49,26 +67,47 @@ include 'includes/header.php';
             </div>
 
             <hr class="my-5">
+
+            <!-- BLOQUE COMPLETO: ESTADO + COTIZACIÓN + QR -->
             <h3 class="text-primary text-center mb-4">ESTADO DE TU CRÉDITO</h3>
 
             <?php if ($cotizo): ?>
-                
-                    <h5 class="display-5">Tu cotización</h5>
-                    
-                        <div class="col-md-8">
-                            <p class="lead"><strong>Auto:</strong> <?= htmlspecialchars($cotizo['auto_interes']) ?></p>
-                            <p class="lead"><strong>Plazo:</strong> <?= $cotizo['plazo_meses'] ?> meses</p>
-                            <p class="lead"><strong>Enganche:</strong> $<?= number_format($cotizo['enganche_dado'], 2) ?></p>
-                            <p class="lead"><strong>Fecha:</strong> <?= date('d/m/Y H:i', strtotime($cotizo['fecha_cotizacion'])) ?></p>
+                <div class="bg-light rounded-4 p-4 shadow-sm border">
+                    <div class="row justify-content-center align-items-center g-4">
+                        
+                        <!-- COTIZACIÓN -->
+                        <div class="col-lg-6 text-center text-lg-start">
+                            <h5 class="display-6 mb-3">Tu cotización</h5>
+                            <p class="lead mb-2"><strong>Auto:</strong> <?= htmlspecialchars($cotizo['auto_interes']) ?></p>
+                            <p class="lead mb-2"><strong>Plazo:</strong> <?= $cotizo['plazo_meses'] ?> meses</p>
+                            <p class="lead mb-2"><strong>Enganche:</strong> $<?= number_format($cotizo['enganche_dado'], 2) ?></p>
+                            <p class="lead mb-0"><strong>Fecha:</strong> <?= date('d/m/Y H:i', strtotime($cotizo['fecha_cotizacion'])) ?></p>
+                        </div>
+
+                        <!-- QR + TEXTO -->
+                        <div class="col-lg-6 text-center">
+                            <div class="bg-white p-3 rounded-4 shadow-sm d-inline-block" style="max-width: 200px;">
+                                <p class="mb-2 fw-bold text-primary small lh-1">
+                                    Muestra tu<br>aprobación
+                                </p>
+                                <?php if ($qr_file && file_exists($qr_file)): ?>
+                                    <img src="<?= $qr_file ?>?v=<?= time() ?>" 
+                                         alt="QR Aprobación" 
+                                         class="img-fluid rounded border mb-2" 
+                                         style="width: 120px; height: 120px;">
+                                <?php else: ?>
+                                    <div class="bg-gray-200 border rounded mx-auto mb-2" style="width: 120px; height: 120px;"></div>
+                                <?php endif; ?>
+                                <small class="text-muted d-block">Escanea aquí</small>
+                            </div>
                         </div>
                     </div>
-                    <hr>
-                    
-                    <p class="text-muted">¡Gracias por confiar en GAM Multimarca!</p>
+
+                    <hr class="my-4">
+                    <p class="text-muted text-center mb-0">¡Gracias por confiar en GAM Multimarca!</p>
                 </div>
             <?php else: ?>
                 <div class="text-center p-5 bg-light rounded shadow">
-                    
                     <p class="lead">Cotiza en 1 minuto y te llamamos</p>
                     <a href="cotizador.php" class="btn btn-primary btn-lg px-5 mt-3">
                         COTIZAR AHORA
