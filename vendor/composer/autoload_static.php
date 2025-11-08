@@ -20,6 +20,11 @@ class ComposerStaticInit2185d2f99bcd56787481d9357a5972d3
         array (
             'Masterminds\\' => 12,
         ),
+        'I' => 
+        array (
+            'Intervention\\Image\\' => 19,
+            'Intervention\\Gif\\' => 17,
+        ),
         'F' => 
         array (
             'FontLib\\' => 8,
@@ -46,6 +51,14 @@ class ComposerStaticInit2185d2f99bcd56787481d9357a5972d3
         'Masterminds\\' => 
         array (
             0 => __DIR__ . '/..' . '/masterminds/html5/src',
+        ),
+        'Intervention\\Image\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/intervention/image/src',
+        ),
+        'Intervention\\Gif\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/intervention/gif/src',
         ),
         'FontLib\\' => 
         array (
