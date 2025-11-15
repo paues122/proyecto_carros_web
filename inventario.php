@@ -168,7 +168,7 @@ include 'includes/header.php';
             <?php foreach ($autos as $auto): ?>
             <div class="col">
                 <div class="card h-100 shadow hover-shadow border-0">
-                    <!-- IMAGEN -->
+                    
                     <?php if (!empty($auto['imagen']) && file_exists($auto['imagen'])): ?>
                         <img src="<?= htmlspecialchars($auto['imagen']) ?>" 
                              class="card-img-top" 
