@@ -6,7 +6,6 @@ $app->isAuth();
 include 'includes/header.php'; 
 ?>
 
-
 <div id="autoAgenciaCarousel" class="carousel slide w-100" data-bs-ride="carousel">
   <div class="carousel-inner">
     <div class="carousel-item active">
@@ -60,7 +59,6 @@ include 'includes/header.php';
 <section class="container my-5">
   <div class="row g-5">
     
-  
     <div class="col-lg-6">
       <div class="card border-0 shadow-sm h-100">
         <div class="card-body p-0">
@@ -86,7 +84,6 @@ include 'includes/header.php';
       </div>
     </div>
 
-   
     <div class="col-lg-6">
       <div class="card border-0 shadow-sm h-100">
         <div class="card-body p-4">
@@ -153,6 +150,103 @@ include 'includes/header.php';
   </div>
 </section>
 
+<section class="container mb-5">
+    <div class="card shadow border-0" style="background: #f8f9fa;">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold"><i class="fas fa-shield-alt text-warning"></i> COTIZA TU SEGURO AUTO</h5>
+            <span class="badge bg-warning text-dark">Servicio Python</span>
+        </div>
+        <div class="card-body p-4">
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <h5 class="card-title text-primary fw-bold mb-3">Protege tu inversión</h5>
+                    <p class="text-muted mb-4">Elige entre nuestras 4 aseguradoras premium y selecciona tu plan de pago ideal.</p>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-uppercase">Aseguradora</label>
+                            <select id="selAseguradora" class="form-select">
+                                <option value="">Selecciona...</option>
+                                <option value="qualitas">Qualitas ($18,500)</option>
+                                <option value="abba">Abba ($13,700)</option>
+                                <option value="sura">Sura ($11,900)</option>
+                                <option value="general">General de Seguros ($15,000)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-uppercase">Plan de Pago</label>
+                            <select id="selPago" class="form-select">
+                                <option value="contado">De Contado (Anual)</option>
+                                <option value="trimestral">Trimestral</option>
+                                <option value="mensual">Mensual (En financiamiento)</option>
+                            </select>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <button onclick="calcularSeguro()" class="btn btn-primary w-100 fw-bold">
+                                <i class="fas fa-calculator"></i> CALCULAR PRECIO
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5 mt-4 mt-lg-0 border-start">
+                    <div id="resultadoSeguro" class="text-center p-3" style="display: none;">
+                        <span class="text-muted small text-uppercase">Tu cotización:</span>
+                        <h4 class="fw-bold mt-2" id="resNombre">...</h4>
+                        <h2 class="display-4 fw-bold text-success my-0" id="resMonto">$0</h2>
+                        <span class="badge bg-success mb-3" id="resPlazo">...</span>
+                        <hr>
+                        <small class="text-muted">Costo total anual: <strong id="resTotal">$0</strong></small>
+                    </div>
+                    
+                    <div id="introSeguro" class="text-center py-4 text-muted opacity-50">
+                        <i class="fas fa-file-contract fa-5x mb-3"></i>
+                        <p class="mb-0 fw-bold">Selecciona opciones para cotizar</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function calcularSeguro() {
+        const aseguradora = document.getElementById('selAseguradora').value;
+        const pago = document.getElementById('selPago').value;
+        const divIntro = document.getElementById('introSeguro');
+        const divRes = document.getElementById('resultadoSeguro');
+
+        if (!aseguradora) {
+            alert("Por favor selecciona una aseguradora.");
+            return;
+        }
+
+        divIntro.innerHTML = '<div class="spinner-border text-primary" role="status"></div><p class="mt-2">Consultando Python...</p>';
+
+        // LLAMADA AL SERVICIO (Puerto 5000)
+        fetch(`http://127.0.0.1:5000/cotizar_seguro?aseguradora=${aseguradora}&tipo_pago=${pago}`)
+            .then(response => response.json())
+            .then(data => {
+                divIntro.style.display = 'none';
+                if (data.status === 'success') {
+                    divRes.style.display = 'block';
+                    document.getElementById('resNombre').innerText = data.aseguradora;
+                    document.getElementById('resMonto').innerText = `$${data.monto}`;
+                    document.getElementById('resPlazo').innerText = data.plazo;
+                    document.getElementById('resTotal').innerText = `$${data.total_anual}`;
+                } else {
+                    alert(data.mensaje);
+                    divIntro.style.display = 'block';
+                    divIntro.innerHTML = '<i class="fas fa-exclamation-triangle fa-3x text-danger"></i><p>Error en consulta</p>';
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                divIntro.innerHTML = '<p class="text-danger">Error: No se pudo conectar a Python. ¿Está corriendo el script?</p>';
+            });
+    }
+</script>
+
 <section class="about-section bg-light py-5">
   <div class="container">
     <div class="row justify-content-center text-center">
@@ -163,7 +257,6 @@ include 'includes/header.php';
           Con más de 10 años de experiencia, ofrecemos autos de calidad, 
           financiamiento inmediato y la mejor atención personalizada.
         </p>
-        
       </div>
     </div>
   </div>
