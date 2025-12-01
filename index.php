@@ -154,7 +154,7 @@ include 'includes/header.php';
     <div class="card shadow border-0" style="background: #f8f9fa;">
         <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0 fw-bold"><i class="fas fa-shield-alt text-warning"></i> COTIZA TU SEGURO AUTO</h5>
-            <span class="badge bg-warning text-dark">Servicio Python</span>
+            <span class="badge bg-warning text-dark">Servicio</span>
         </div>
         <div class="card-body p-4">
             <div class="row align-items-center">
