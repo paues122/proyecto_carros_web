@@ -95,18 +95,18 @@ if ($puede_eliminar && ($_GET['accion'] ?? '') === 'eliminar' && !empty($_GET['i
     $id = $_GET['id'];
     $auto = $inventario->readOne($id);
     
-    // Borrar imagen del servidor
+  
     if ($auto && !empty($auto['imagen']) && file_exists($auto['imagen'])) {
         unlink($auto['imagen']); 
     }
     
-    // Borrar de BD (Usa transacción en el modelo)
+  
     $inventario->delete($id);
     header('Location: inventario.php?del=1');
     exit;
 }
 
-// Leer listado final
+
 $autos = $inventario->read();
 
 include 'includes/header.php';
@@ -121,7 +121,7 @@ include 'includes/header.php';
 
 <?php if (isset($_GET['updated'])): ?>
     <div class="alert alert-info alert-dismissible fade show m-3">
-        Auto actualizado correctamente (Transacción Exitosa)
+        Auto actualizado correctamente
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 <?php endif; ?>
